@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+files:
+  - source: /index.html
+    destination: /var/www/html/
+file_exists_behavior: OVERWRITE
+permissions:
+  - object: /var/www/html/
+    pattern: "*.html"
+    owner: ec2-user
+    mode: 777
+hooks:
+  BeforeInstall:
+    - location: install_dependencies.sh
+  ApplicationStop:
+    - location: deregister_from_elb.sh
+    - location: stop_httpd.sh
+  ApplicationStart:
+    - location: start_httpd.sh
+    - location: register_with_elb.sh
